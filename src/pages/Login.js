@@ -1,6 +1,8 @@
 import {useNavigate} from 'react-router-dom'
 import React from 'react'
 import auth from '../auth'
+import { useAuth0 } from "@auth0/auth0-react";
+import Profile from './Profile';
 
 export default function Login() {
 
@@ -9,11 +11,8 @@ let userPassword="";
 const navigate = useNavigate();
     function submit(event){
         event.preventDefault();
-
      userEmail =  event.target.email.value;
      userPassword = event.target.password.value;
-
-    
         if(!userEmail || !userPassword)
                 return
         else {
@@ -24,19 +23,30 @@ const navigate = useNavigate();
           navigate('/profile');
         }
     }
-
-    return (
-        <form className="mt-5 container" onSubmit={submit}>
-        <div className="mb-3">
-          <label htmlFor="exampleInputEmail1" className="form-label">Email address</label>
-          <input type="email" className="form-control" id="exampleInputEmail1" name="email" />
-          <div id="emailHelp" className="form-text">We'll never share your email with anyone else.</div>
-        </div>
-        <div className="mb-3">
-          <label htmlFor="exampleInputPassword1" className="form-label">Password</label>
-          <input type="password" className="form-control" id="exampleInputPassword1" name="password" />
-        </div>
-        <button type="submit" className="btn btn-primary">Submit</button>
-      </form>
+    const { loginWithRedirect,isAuthenticated } = useAuth0();
+if(!isAuthenticated)
+    return(
+      !isAuthenticated &&( 
+        <button onClick={() => loginWithRedirect()}>Log In</button>
+       )
     )
+  else 
+  return(
+    <Profile></Profile>
+  )
+
+    // return (
+    //     <form className="mt-5 container" onSubmit={submit}>
+    //     <div className="mb-3">
+    //       <label htmlFor="exampleInputEmail1" className="form-label">Email address</label>
+    //       <input type="email" className="form-control" id="exampleInputEmail1" name="email" />
+    //       <div id="emailHelp" className="form-text">We'll never share your email with anyone else.</div>
+    //     </div>
+    //     <div className="mb-3">
+    //       <label htmlFor="exampleInputPassword1" className="form-label">Password</label>
+    //       <input type="password" className="form-control" id="exampleInputPassword1" name="password" />
+    //     </div>
+    //     <button type="submit" className="btn btn-primary">Submit</button>
+    //   </form>
+    // )
 }
